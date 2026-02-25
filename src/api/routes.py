@@ -20,3 +20,28 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+@api.route('/singup', methods=['POST'])
+def singup():
+    data = request.get_json()
+    email = data.get ('email')
+    password = data.get ('password')
+
+    if not email or not password:
+        return jsonify({"Error":"Email and password required"}), 400
+    
+    existing_user = db.session.execute(db.select(User).where(
+        User.email == email)).scalar_one_or_none()
+    
+    if existing_user:
+        return jsonify({"Error":"Email already exist"}), 400
+    
+    new_user = User(email=email)
+    new_user.set_password(password)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"Message":"User created usccessfully"}), 201
+
+    
