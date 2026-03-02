@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 api = Blueprint('api', __name__)
 
@@ -67,3 +67,21 @@ def login():
 
     else:
         return jsonify ({"error": "Invalided email or password"}), 401
+    
+@api.route('/profile', methods=['GET'])
+@jwt_required()
+def profile():
+
+    user_id = get_jwt_identity()
+
+    user = db.session.execute(
+        db.select(User).where(User.id == int(user_id))
+    ).scalar_one_or_none()
+
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "message": "Profile data",
+        "user": user.serialize()
+    }), 200
