@@ -4,11 +4,8 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Exercise, Muscle, Equipment
 from api.utils import generate_sitemap, APIException
-from flask_cors import CORS
-<<<<<<<<< Temporary merge branch 1
-=========
+from flask_cors import CORS 
 import requests
->>>>>>>>> Temporary merge branch 2
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 api = Blueprint('api', __name__)
