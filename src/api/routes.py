@@ -5,10 +5,10 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Exercise, Muscle, Equipment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-<<<<<<< HEAD
-=======
+<<<<<<<<< Temporary merge branch 1
+=========
 import requests
->>>>>>> 4315965f881ac9724ade812f31917d0e1c11f4b8
+>>>>>>>>> Temporary merge branch 2
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 api = Blueprint('api', __name__)
@@ -72,7 +72,7 @@ def login():
         return jsonify({"Message": "Login successful", "token": access_token, "user": user.serialize()}), 200
 
     else:
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
         return jsonify ({"error": "Invalided email or password"}), 401
     
 @api.route('/profile', methods=['GET'])
@@ -87,12 +87,12 @@ def profile():
 
     if user is None:
         return jsonify({"error": "User not found"}), 404
-
+ 
     return jsonify({
         "message": "Profile data",
         "user": user.serialize()
     }), 200
-=======
+=========
         return jsonify({"error": "Invalided email or password"}), 401
 
 
@@ -189,4 +189,4 @@ def import_muscles():
     
     db.session.commit()
     return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200 
->>>>>>> 4315965f881ac9724ade812f31917d0e1c11f4b8
+>>>>>>>>> Temporary merge branch 2
