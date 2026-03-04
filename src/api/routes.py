@@ -88,7 +88,7 @@ def profile():
         "message": "Profile data",
         "user": user.serialize()
     }), 200
-        return jsonify({"error": "Invalided email or password"}), 401
+    return jsonify({"error": "Invalided email or password"}), 401
 
 
 @api.route('/import-wger', methods=['GET'])
