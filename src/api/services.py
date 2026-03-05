@@ -1,4 +1,5 @@
-from api.models import db,Exercise,Muscle,Equipment
+
+from api.models import db,Equipment,Exercise,Muscle,Workout,WorkoutExercise
 
 
-def generate_workout (muscle_id,equipment_id,max_time):
+def generate_workout (user_id,muscle_id,equipment_id,max_time):
