@@ -42,7 +42,7 @@ class Equipment(db.Model):
             "name": self.name
         }
 
-    class Muscle(db.Model):
+class Muscle(db.Model):
         __tablename__ = "muscle"
         id: Mapped[int] = mapped_column(primary_key=True)
         name: Mapped[str] = mapped_column(
@@ -59,7 +59,7 @@ class Equipment(db.Model):
                 "name": self.name
             }
 
-    class Exercise (db.Model):
+class Exercise (db.Model):
         __tablename__ = "exercise"
         id: Mapped[int] = mapped_column(primary_key=True)
         name: Mapped[str] = mapped_column(
@@ -85,7 +85,7 @@ class Equipment(db.Model):
                 "muscles": [m.name for m in self.muscles],
             }
 
-    class Workout (db.Model):
+class Workout (db.Model):
         __tablename__ = "workout"
         id: Mapped[int] = mapped_column(primary_key=True)
         user_id: Mapped[int] = mapped_column(
@@ -114,7 +114,7 @@ class Equipment(db.Model):
 
             }
 
-    class WorkoutExercise(db.Model):
+class WorkoutExercise(db.Model):
         __tablename__ = "workout_exercises"
 
         id: Mapped[int] = mapped_column(
@@ -137,7 +137,7 @@ class Equipment(db.Model):
         exercise: Mapped["Exercise"] = relationship(
         )
 
-    class FavoriteWorkout(db.Model):
+class FavoriteWorkout(db.Model):
     __tablename__ = "favorite_workout"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -173,7 +173,7 @@ class Equipment(db.Model):
 
             }
 
-    class User(db.Model):
+class User(db.Model):
         id: Mapped[int] = mapped_column(
             primary_key=True)
         email: Mapped[str] = mapped_column(
