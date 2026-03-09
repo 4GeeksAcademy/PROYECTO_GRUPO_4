@@ -9,8 +9,11 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 import requests
 api = Blueprint('api', __name__)
 
+
+
 # Allow CORS requests to this API
 CORS(api)
+
 
 
 @api.route('/hello', methods=['POST', 'GET'])
@@ -176,12 +179,12 @@ def import_wger():
 
     url = "https://wger.de/api/v2/exerciseinfo/?language=2&status=2"
     response = requests.get(url)
-
+    print(response)
     if response.status_code != 200:
         return jsonify({"msg": "No pude conectar con la Api"}), 500
 
     data = response.json()
-    print(data)
+    
     ejercicios_lista = data.get('results', [])
     print(f"He recibido {len(ejercicios_lista)} ejercicios de la API")
     for item in ejercicios_lista:
@@ -256,6 +259,90 @@ def import_muscles():
         db.session.add(nuevo_musculo)
 
     db.session.commit()
+    return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200 
+
+    
+
+@api.route('/workouts', methods=['POST'])
+def create_workout():
+    data = request.get_json()
+
+    if not data.get("name") or not data.get("type") or not data.get("time") or not data.get("user_id") or not data.get("exercises"):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    
+    new_workout = Workout(
+            name=data.get("name"),
+            type=data.get("type"),
+            time=data.get("time"),
+            user_id=data.get("user_id")
+        )
+    db.session.add(new_workout)
+    db.session.flush() # para obtener el id antes de hacer commit
+
+    for exercise in data.get("exercises"):
+            new_relation = WorkoutExercise(
+                workout_id=new_workout.id,
+                exercise_id=exercise.get("exercise_id"),
+                order=exercise.get("order"),
+                reps=exercise.get("reps"),
+                percent_of_max=exercise.get("percent_of_max")
+            )
+            db.session.add(new_relation)
+
+    db.session.commit()
+    return jsonify(new_workout.serialize()), 201
+
+
+@api.route('/user/<int:user_id>/workouts', methods=['GET'])
+def get_user_workouts(user_id):
+
+    user_workouts = Workout.query.filter_by(user_id=user_id).all()
+    
+    return jsonify([workout.serialize() for workout in user_workouts]), 200
+
+
+@api.route('/workouts/<int:workout_id>', methods=['PUT'])
+def update_workout(workout_id):
+    data = request.get_json()
+    
+    workout = Workout.query.get(workout_id)
+    if not workout:
+        return jsonify({"msg": "Workout no encontrado"}), 404
+
+    workout.name = data.get("name", workout.name)
+    workout.type = data.get("type", workout.type)
+    workout.time = data.get("time", workout.time)
+
+    if "exercises" in data:
+            WorkoutExercise.query.filter_by(workout_id=workout_id).delete()
+
+            for excercise in data.get("exercises"):
+                new_rel = WorkoutExercise(
+                    workout_id=workout.id,
+                    exercise_id=excercise.get("exercise_id"),
+                    order=excercise.get("order"),
+                    reps=excercise.get("reps"),
+                    percent_of_max=excercise.get("percent_of_max")
+                )
+                db.session.add(new_rel)
+
+    db.session.commit()
+    return jsonify(workout.serialize()), 200
+
+
+@api.route('/workouts/<int:workout_id>', methods=['DELETE'])
+def delete_workout(workout_id):
+    workout = Workout.query.get(workout_id)
+
+    if not workout:
+        return jsonify({"msg": "Workout no encontrado"}), 404
+    
+    WorkoutExercise.query.filter_by(workout_id=workout_id).delete()
+    db.session.delete(workout)
+    db.session.commit()
+
+    return jsonify({"msg": f"Workout {workout_id} eliminado correctamente"}), 200
     return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200
 
 # Eliminar esto:
