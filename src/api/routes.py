@@ -257,5 +257,3 @@ def import_muscles():
 
     db.session.commit()
     return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200
-
-# Eliminar esto:
