@@ -6,17 +6,15 @@ from api.models import db, User, Exercise, Muscle, Equipment, Workout, FavoriteW
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-import requests 
+import requests
 
 from api.services import generate_workout
 
 api = Blueprint('api', __name__)
 
 
-
 # Allow CORS requests to this API
 CORS(api)
-
 
 
 @api.route('/hello', methods=['POST', 'GET'])
@@ -187,11 +185,15 @@ def import_wger():
         return jsonify({"msg": "No pude conectar con la Api"}), 500
 
     data = response.json()
-    
+
     ejercicios_lista = data.get('results', [])
+    
     print(f"He recibido {len(ejercicios_lista)} ejercicios de la API")
     for item in ejercicios_lista:
         translations = item.get('translations')
+        api_muscles = item.get('muscles', [])
+
+        target_muscle_id = api_muscles[0]if api_muscles else None
 
         if translations is None or translations == "":
             continue
@@ -200,7 +202,8 @@ def import_wger():
             if translation["language"] == 4:
                 nuevo_ejercicio = Exercise(
                     name=translation["name"],
-                    description=translation["description"]
+                    description=translation["description"],
+                    muscle_id=target_muscle_id
 
                 )
                 db.session.add(nuevo_ejercicio)
@@ -262,9 +265,8 @@ def import_muscles():
         db.session.add(nuevo_musculo)
 
     db.session.commit()
-    return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200 
+    return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200
 
-    
 
 @api.route('/workouts', methods=['POST'])
 def create_workout():
@@ -273,25 +275,24 @@ def create_workout():
     if not data.get("name") or not data.get("type") or not data.get("time") or not data.get("user_id") or not data.get("exercises"):
         return jsonify({"error": "Missing required fields"}), 400
 
-    
     new_workout = Workout(
-            name=data.get("name"),
-            type=data.get("type"),
-            time=data.get("time"),
-            user_id=data.get("user_id")
-        )
+        name=data.get("name"),
+        type=data.get("type"),
+        time=data.get("time"),
+        user_id=data.get("user_id")
+    )
     db.session.add(new_workout)
-    db.session.flush() # para obtener el id antes de hacer commit
+    db.session.flush()  # para obtener el id antes de hacer commit
 
     for exercise in data.get("exercises"):
-            new_relation = WorkoutExercise(
-                workout_id=new_workout.id,
-                exercise_id=exercise.get("exercise_id"),
-                order=exercise.get("order"),
-                reps=exercise.get("reps"),
-                percent_of_max=exercise.get("percent_of_max")
-            )
-            db.session.add(new_relation)
+        new_relation = WorkoutExercise(
+            workout_id=new_workout.id,
+            exercise_id=exercise.get("exercise_id"),
+            order=exercise.get("order"),
+            reps=exercise.get("reps"),
+            percent_of_max=exercise.get("percent_of_max")
+        )
+        db.session.add(new_relation)
 
     db.session.commit()
     return jsonify(new_workout.serialize()), 201
@@ -301,14 +302,14 @@ def create_workout():
 def get_user_workouts(user_id):
 
     user_workouts = Workout.query.filter_by(user_id=user_id).all()
-    
+
     return jsonify([workout.serialize() for workout in user_workouts]), 200
 
 
 @api.route('/workouts/<int:workout_id>', methods=['PUT'])
 def update_workout(workout_id):
     data = request.get_json()
-    
+
     workout = Workout.query.get(workout_id)
     if not workout:
         return jsonify({"msg": "Workout no encontrado"}), 404
@@ -318,22 +319,20 @@ def update_workout(workout_id):
     workout.time = data.get("time", workout.time)
 
     if "exercises" in data:
-            WorkoutExercise.query.filter_by(workout_id=workout_id).delete()
+        WorkoutExercise.query.filter_by(workout_id=workout_id).delete()
 
-            for excercise in data.get("exercises"):
-                new_rel = WorkoutExercise(
-                    workout_id=workout.id,
-                    exercise_id=excercise.get("exercise_id"),
-                    order=excercise.get("order"),
-                    reps=excercise.get("reps"),
-                    percent_of_max=excercise.get("percent_of_max")
-                )
-                db.session.add(new_rel)
+        for excercise in data.get("exercises"):
+            new_rel = WorkoutExercise(
+                workout_id=workout.id,
+                exercise_id=excercise.get("exercise_id"),
+                order=excercise.get("order"),
+                reps=excercise.get("reps"),
+                percent_of_max=excercise.get("percent_of_max")
+            )
+            db.session.add(new_rel)
 
     db.session.commit()
     return jsonify(workout.serialize()), 200
-
-
 
 
 @api.route('/workouts/<int:workout_id>', methods=['DELETE'])
@@ -342,43 +341,46 @@ def delete_workout(workout_id):
 
     if not workout:
         return jsonify({"msg": "Workout no encontrado"}), 404
-    
+
     WorkoutExercise.query.filter_by(workout_id=workout_id).delete()
     db.session.delete(workout)
     db.session.commit()
 
     return jsonify({"msg": f"Workout {workout_id} eliminado correctamente"}), 200
-    
 
 
-
-
-@api.route('/workouts/generate',methods =['POST'])
+@api.route('/workouts/generate', methods=['POST'])
 @jwt_required()
-def handle_generate_workout ():
+def handle_generate_workout():
     user_id = get_jwt_identity()
     data = request.get_json()
 
     muscle_id = data.get("muscle_id")
     max_time = data.get("max_time")
-    equipment_ids = data.get ("equipment_ids",[])
-    workout_name = data.get ("name") or "Rutina Auto"
+    equipment_ids = data.get("equipment_ids", [])
+    workout_name = data.get("name") or "Rutina Auto"
 
     if not muscle_id or not max_time:
-        return jsonify ({"msg": "No se han encontrado parametros"}),404
-    
+        return jsonify({"msg": "No se han encontrado parametros"}), 404
 
     nuevo_entreno = generate_workout(
-        user_id= user_id,
-        muscle_id = muscle_id,
-        equipment_ids = equipment_ids,
-        max_time = max_time,
-        workout_name= workout_name
+        user_id=user_id,
+        muscle_id=muscle_id,
+        equipment_ids=equipment_ids,
+        max_time=max_time,
+        workout_name=workout_name
 
     )
-    
+
     if not nuevo_entreno:
-        return jsonify({"msg":"No se han encontrado ejercicios para este entrenamiento"}),400
-    
-    
-    return jsonify (nuevo_entreno.serialize()),201
+        return jsonify({"msg": "No se han encontrado ejercicios para este entrenamiento"}), 400
+
+    return jsonify(nuevo_entreno.serialize()), 201
+
+
+@api.route('/exercises', methods=['GET'])
+def get_all_exercises():
+
+    exercises = Exercise.query.all()
+    results = [exercise.serialize() for exercise in exercises]
+    return jsonify(results), 200
