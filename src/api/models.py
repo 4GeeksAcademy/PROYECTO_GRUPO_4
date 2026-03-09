@@ -162,21 +162,11 @@ class FavoriteWorkout(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "workout_id": self.workout_id
-        }
-
-    def serialize(self):
-        return {
-            "id": self.id,
             "workout_id": self.workout_id,
-            "exercise_id": self.exercise_id,
-            "exercise_name": self.exercise.name if self.exercise else None,
-            "order": self.order,
-            "reps": self.reps,
-            "percent_of_max": self.percent_of_max
-
-
+            "workout":self.workout.serialize() if self.workout else None
         }
+
+    
 
 
 class User(db.Model):

@@ -6,7 +6,10 @@ from api.models import db, User, Exercise, Muscle, Equipment, Workout, FavoriteW
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-import requests
+import requests 
+
+from api.services import generate_workout
+
 api = Blueprint('api', __name__)
 
 
@@ -331,6 +334,8 @@ def update_workout(workout_id):
     return jsonify(workout.serialize()), 200
 
 
+
+
 @api.route('/workouts/<int:workout_id>', methods=['DELETE'])
 def delete_workout(workout_id):
     workout = Workout.query.get(workout_id)
@@ -346,3 +351,34 @@ def delete_workout(workout_id):
     
 
 
+
+
+@api.route('/workouts/generate',methods =['POST'])
+@jwt_required()
+def handle_generate_workout ():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    muscle_id = data.get("muscle_id")
+    max_time = data.get("max_time")
+    equipment_ids = data.get ("equipment_ids",[])
+    workout_name = data.get ("name") or "Rutina Auto"
+
+    if not muscle_id or not max_time:
+        return jsonify ({"msg": "No se han encontrado parametros"}),404
+    
+
+    nuevo_entreno = generate_workout(
+        user_id= user_id,
+        muscle_id = muscle_id,
+        equipment_ids = equipment_ids,
+        max_time = max_time,
+        workout_name= workout_name
+
+    )
+    
+    if not nuevo_entreno:
+        return jsonify({"msg":"No se han encontrado ejercicios para este entrenamiento"}),400
+    
+    
+    return jsonify (nuevo_entreno.serialize()),201
