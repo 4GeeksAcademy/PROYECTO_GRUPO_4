@@ -53,6 +53,6 @@ def generate_workout(user_id, muscle_id, equipment_ids, max_time, workout_name):
         )
         nuevo_entrenamiento.workout_exercises.append(detalle)
 
-    db.session.comit()
+    db.session.commit()
 
     return nuevo_entrenamiento
