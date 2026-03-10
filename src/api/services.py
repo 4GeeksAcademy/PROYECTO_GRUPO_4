@@ -3,6 +3,7 @@ from api.models import db, Equipment, Exercise, Muscle, Workout, WorkoutExercise
 
 
 def generate_workout(user_id, muscle_id, equipment_ids, max_time, workout_name):
+    
 
     query = Exercise.query.filter(Exercise.muscles.any(id=muscle_id))
 

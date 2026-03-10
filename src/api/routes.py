@@ -191,9 +191,20 @@ def import_wger():
     print(f"He recibido {len(ejercicios_lista)} ejercicios de la API")
     for item in ejercicios_lista:
         translations = item.get('translations')
+        
+        
         api_muscles = item.get('muscles', [])
-
-        target_muscle_id = api_muscles[0]if api_muscles else None
+        if api_muscles:
+            muscle_name_api = api_muscles[0].get('name_en')
+            muscle_db = Muscle.query.filter_by(name=muscle_name_api).first()
+            
+        api_equipments = item.get('equipment', [])
+        equipos_encontrados = []
+        for eq in api_equipments:
+            eq_name = eq.get('name') 
+            equipo_db = Equipment.query.filter_by(name=eq_name).first()
+            if equipo_db:
+                equipos_encontrados.append(equipo_db)   
 
         if translations is None or translations == "":
             continue
@@ -203,9 +214,15 @@ def import_wger():
                 nuevo_ejercicio = Exercise(
                     name=translation["name"],
                     description=translation["description"],
-                    muscle_id=target_muscle_id
+                    
 
                 )
+                if muscle_db:
+                    nuevo_ejercicio.muscles.append(muscle_db)
+
+                for equipo in equipos_encontrados:
+                    nuevo_ejercicio.equipments.append(equipo)
+                    
                 db.session.add(nuevo_ejercicio)
 
     db.session.commit()
@@ -237,7 +254,7 @@ def import_equipment():
         db.session.add(nuevo_equipo)
 
     db.session.commit()
-    return jsonify({"msg": "Se han guardado los ejercicios nuevos"}), 200
+    return jsonify({"msg": "Se han guardado los equipamientos nuevos"}), 200
 
 
 @api.route('/import-muscles', methods=['GET'])

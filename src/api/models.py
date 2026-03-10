@@ -36,6 +36,9 @@ class Equipment(db.Model):
         back_populates="equipments"
     )
 
+    def __repr__(self):
+        return self.name
+
     def serialize(self):
         return {
             "id": self.id,
@@ -53,6 +56,9 @@ class Muscle(db.Model):
         secondary=exercise_muscle,
         back_populates="muscles"
     )
+
+    def __repr__(self):
+        return self.name
 
     def serialize(self):
         return {
@@ -138,8 +144,15 @@ class WorkoutExercise(db.Model):
         back_populates="workout_exercises"
     )
     # esta relacion no tiene backpopulates porque es unidireccional, pocas veces va s preguntar a un ejercicio en cuantos entrenamientos aparece.
-    exercise: Mapped["Exercise"] = relationship(
-    )
+    exercise: Mapped["Exercise"] = relationship('Exercise')
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "workout_id": self.workout_id,
+            "exercise_id": self.exercise_id,
+            "exercise": self.exercise.serialize() if self.exercise else None
+        }
 
 
 class FavoriteWorkout(db.Model):
@@ -163,10 +176,8 @@ class FavoriteWorkout(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "workout_id": self.workout_id,
-            "workout":self.workout.serialize() if self.workout else None
+            "workout": self.workout.serialize() if self.workout else None
         }
-
-    
 
 
 class User(db.Model):
