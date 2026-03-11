@@ -405,3 +405,15 @@ def get_all_exercises():
     exercises = Exercise.query.all()
     results = [exercise.serialize() for exercise in exercises]
     return jsonify(results), 200
+
+@api.route('/muscles', methods=['GET'])
+def get_all_muscles():
+    muscles = Muscle.query.all()
+    return jsonify([m.serialize() for m in muscles]), 200
+
+
+
+@api.route('/equipment', methods=['GET'])
+def get_all_equipment():
+    equipment = Equipment.query.all()
+    return jsonify([e.serialize() for e in equipment]), 200
