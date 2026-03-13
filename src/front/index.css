@@ -27,13 +27,40 @@
 @keyframes deslizarSubir {
     from {
         opacity: 0;
-        transform: translateY(30px); /* Empieza 30px más abajo */
+        transform: translateY(30px); 
     }
     to {
         opacity: 1;
-        transform: translateY(0);    /* Termina en su sitio */
-    }
+        transform: translateY(0);    
+}
 }
 .animacion-entrada {
-    animation: deslizarSubir 0.6s ease-out; /* Dura 0.6 segundos */
+    animation: deslizarSubir 0.6s ease-out; 
+}
+
+.generator-wrapper {
+    max-width: 450px;
+    margin: 2rem auto;
+}
+
+.font-oswald {
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+}
+
+
+.form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.modal-over {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); 
+    z-index: 1000;
+    backdrop-filter: blur(5px); 
 }

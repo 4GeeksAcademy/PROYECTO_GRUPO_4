@@ -1,12 +1,22 @@
-import React, { useEffect } from "react"
+import React, { useEffect,useState } from "react"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { GeneratorView } from "../components/GeneratorView";
+import { WorkoutCard } from "../components/WorkoutCard";
 
 
 
 export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
+	const [showGenerator,setShowGenerator]= useState(false);
+	const [workout,setWorkout]= useState(null);
+	const [showCard,setShowCard]= useState(false);
+	const handleGenerated = (data)=>{
+		setWorkout(data);
+		setShowGenerator(false);
+		setShowCard(true);
+	};
 
 	const loadMessage = async () => {
 		try {
@@ -37,26 +47,50 @@ export const Home = () => {
 	}, [])
 
 	return (
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
-			</div>
-			
-        
+		<div className="bg-black min-vh-100 text-center pt-5">
+            {/* CABECERA PRINCIPAL */}
+            <h1 className="text-white display-2 fw-bold mb-4 font-oswald">
+                WOD <span className="text-danger">GENERATOR</span>
+            </h1>
+            <p className="text-secondary mb-5">PREPÁRATE PARA EL ENTRENO</p>
 
+            
+            {!showCard && (
+                <button 
+                    className="btn btn-danger btn-lg px-5 py-3 fw-bold animacion-entrada"
+                    onClick={() => setShowGenerator(true)}
+                >
+                    + NUEVO ENTRENAMIENTO
+                </button>
+            )}
 
-			
-		</div>
+            
+            {showGenerator && (
+                <GeneratorView 
+                    onGenerated={handleGenerated} 
+                    onClose={() => setShowGenerator(false)} 
+                />
+            )}
 
-	);
+           
+            {showCard && workout && (
+                <div className="modal-over d-flex align-items-center justify-content-center p-3">
+                    <div className="position-relative w-100" style={{ maxWidth: "600px" }}>
+                        
+                        
+                        <button 
+                            className="btn btn-outline-danger position-absolute top-0 end-0 m-3 z-3 border-0 fs-4"
+                            onClick={() => setShowCard(false)}
+                        >
+                            <i className="fas fa-times"></i>
+                        </button>
+
+                        
+                        <WorkoutCard data={workout} />
+                        
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }; 

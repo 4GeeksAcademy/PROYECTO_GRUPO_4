@@ -1,4 +1,4 @@
-import react from "react";
+import React from "react";
 
 export const WorkoutCard = ({ data }) => {
     if (!data) return <div className="text-white text-center">Esperando un entrenamiento....</div>

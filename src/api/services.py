@@ -53,7 +53,7 @@ def generate_workout(user_id, muscle_id, equipment_ids, max_time, workout_name):
         detalle = WorkoutExercise(
             exercise_id=ex.id,
             order=i + 1,
-            reps=random.choice(reps_option)
+            reps=random.choice(reps_option),
             percent_of_max=75
         )
         nuevo_entrenamiento.workout_exercises.append(detalle)
