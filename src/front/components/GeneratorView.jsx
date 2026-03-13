@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import {getMuscles,getEquipment,generateWokrout} from "src/front/services/backendServices.js";
+import {getMuscles,getEquipment,generateWorkout} from "../services/backendServices.js";
 import { useNavigate} from "react-router-dom";
 
 
@@ -47,7 +47,7 @@ export const GeneratorView = ({onGenerated,onClose})=>{
 
 
         setLoading(true);
-        const result = await generateWokrout(selection);
+        const result = await generateWorkout(selection);
         if (result){
             onGenerated(result);
 

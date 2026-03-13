@@ -64,3 +64,46 @@
     z-index: 1000;
     backdrop-filter: blur(5px); 
 }
+
+.contenedor-comunidad {
+    background-color: #000; /* Fondo negro */
+}
+
+.titulo-seccion {
+    font-family: 'Oswald', sans-serif;
+    border-left: 4px solid #dc3545; /* Línea roja de decoración */
+    padding-left: 15px;
+}
+
+
+.caja-deslizable {
+    display: flex;             
+    overflow-x: auto;          
+    padding-bottom: 20px;
+}
+
+
+.caja-deslizable::-webkit-scrollbar {
+    display: none;
+}
+
+
+.tarjeta-contenedor {
+    flex: 0 0 50%;             
+    min-width: 50%;            
+}
+
+
+.tarjeta-interna {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.texto-rojo-pequeño {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 0.8rem;
+}

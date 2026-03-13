@@ -1,8 +1,9 @@
 import React, { useEffect,useState } from "react"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { GeneratorView } from "../components/GeneratorView";
-import { WorkoutCard } from "../components/WorkoutCard";
+import { GeneratorView } from "../components/GeneratorView.jsx";
+import { WorkoutCard } from "../components/WorkoutCard.jsx";
+import { CarrousellWorkouts } from "../components/CarrousellWorkouts.jsx";
 
 
 
@@ -91,6 +92,10 @@ export const Home = () => {
                     </div>
                 </div>
             )}
+            <div>
+                 <CarrousellWorkouts/>
+            </div>
+            
         </div>
     );
 }; 
