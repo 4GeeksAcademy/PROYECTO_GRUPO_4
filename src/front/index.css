@@ -1,3 +1,53 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.hero {
+    height: 100vh;
+    background:
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url("./assets/img/home-fondo.jpg") center/cover no-repeat;
+}
+
+.content {
+    max-width: 700px;
+}
+
+.logo-img {
+    height: 85px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.1);
+}
+
+.custom-navbar {
+    background: #E10600;
+    height: 80px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.navbar .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.custom-btn {
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+    transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: red;
+    color: white;
+    border: 2px solid white;
 .wod-card {
     background-color: #1a1a1a !important;
     border-radius: 15px;
