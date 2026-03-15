@@ -8,8 +8,11 @@ def generate_workout(user_id, muscle_id, equipment_ids, max_time, workout_name):
     query = Exercise.query.filter(Exercise.muscles.any(id=muscle_id))
 
     if equipment_ids:
-        query = query.filter(Exercise.equipments.any(
-            Equipment.id.in_(equipment_ids)))
+        query = query.filter((Exercise.equipments.any(
+            Equipment.id.in_(equipment_ids)))|
+            (db.not_(Exercise.equipments.any())))
+    else:
+        query= query.filter(db.not_(Exercise.equipments.any()))
 
     posibles_exercises = query.all()
 
@@ -46,10 +49,11 @@ def generate_workout(user_id, muscle_id, equipment_ids, max_time, workout_name):
     db.session.add(nuevo_entrenamiento)
 
     for i, ex in enumerate(seleccionados):
+        reps_option=[21,15,9,12,10,50]
         detalle = WorkoutExercise(
             exercise_id=ex.id,
             order=i + 1,
-            reps=12,
+            reps=random.choice(reps_option)
             percent_of_max=75
         )
         nuevo_entrenamiento.workout_exercises.append(detalle)
