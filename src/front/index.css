@@ -1,7 +1,16 @@
 body {
-  margin: 0;
-  padding: 0;
-  padding-top: 80px;
+    background-color: #0a0a0a; 
+    
+    padding-top: 90px; 
+
+   
+    background-image: 
+        radial-gradient(circle at 20% 35%, rgba(220, 53, 69, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 80% 65%, rgba(220, 53, 69, 0.2) 0%, transparent 40%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: white;
 }
 
 .hero {
@@ -170,4 +179,112 @@ body {
   color: #dc3545 !important;
   transform: scale(1.2);
   transition: 0.3s;
+}
+
+
+
+.custom-range {
+    cursor: pointer;
+}
+
+.custom-range::-webkit-slider-runnable-track {
+    background: #333333;
+    height: 6px;
+    border-radius: 3px;
+}
+
+.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background: #dc3545; 
+    border: 2px solid #ffffff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-top: -7px;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.4);
+}
+
+
+.custom-checkbox .form-check-input {
+    background-color: transparent;
+    border-color: #555555;
+}
+
+.custom-checkbox .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.modal-over {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); 
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+}
+
+
+.bg-black::-webkit-scrollbar {
+    width: 4px;
+}
+.bg-black::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+}
+
+
+/* --- BOTÓN PRINCIPAL (ROJO CROSSFIT) --- */
+.custom-btn {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    font-family: "Oswald", sans-serif;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 15px 35px;
+    border-radius: 4px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.custom-btn:hover {
+    background-color: #f13a4b;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5); /* Efecto Neón */
+}
+
+/* --- BOTÓN SECUNDARIO (OUTLINE) --- */
+.btn-outline-custom {
+    background: transparent;
+    color: #dc3545; /* Ahora el texto es rojo para que destaque más */
+    border: 2px solid #dc3545;
+    font-family: "Oswald", sans-serif;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: 15px 35px;
+    border-radius: 4px;
+    transition: 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-outline-custom:hover {
+    background: rgba(220, 53, 69, 0.05);
+    color: #ffffff;
+    border-color: #ffffff;
+    transform: translateY(-3px);
 }
