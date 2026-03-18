@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export const Profile = () => {
   return (
     <div className="container">
-      {/* Header: Photo, Name, Bio */}
+      
       <header className="headerSection">
         <div style={{ display: "flex", alignItems: "top", gap: "2rem" }}>
           <div
@@ -46,17 +46,17 @@ export const Profile = () => {
         </div>
       </header>
 
-      {/* Body: Grid */}
+     
       <div className="bottomGrid">
-        {/* Mis WODS creados */}
+        
         <section className="contentBox">
           <h2 className="sectionTitle">Mis WODs</h2>
-          {/* Workout cards */}
+          
           <div style={{border: "1px solid #333", padding: "1rem",marginBottom: "1rem",}}>
               <WorkoutCard />
           </div>
         </section>
-        {/* Estadísticas */}
+        
         <section className="contentBox">
           <h2 className="sectionTitle">Estadísticas</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
@@ -72,11 +72,11 @@ export const Profile = () => {
           </ul>
         </section>{" "}
       </div>
-      {/* WODs Favoritos */}
+      
       <footer className="favoritesSection">
         <h2 className="sectionTitle">WODs Favoritos</h2>
         <div className="carouselContainer">
-          {/* Map de los WODs favoritos */}
+          
           <div className="carouselCard">
             <h4>WOD Favorito 1</h4>
             <small>For Time - 20 min</small>

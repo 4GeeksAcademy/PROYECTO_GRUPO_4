@@ -30,32 +30,34 @@ export const registerUser = async (data) => {
 
 
 export const loginUser = async (data) => {
-
     try {
-
         const response = await fetch(`${BACKEND_URL}/api/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
 
         const result = await response.json();
-        if (response.ok && result.token) {
-            localStorage.setItem("token", result.token); 
-            
-            console.log("Sesión iniciada: Token guardado en el navegador.");
+        
+        // --- ESTO ES PARA DEPURAR ---
+        console.log("Respuesta del servidor:", result); 
+
+        if (response.ok) {
+            // Buscamos la llave dentro de la respuesta
+            // Probamos con 'token' o con 'access_token' por si el PR cambió el nombre
+            const realToken = result.token || result.access_token;
+
+            if (realToken && typeof realToken === 'string') {
+                localStorage.setItem("token", realToken);
+                console.log("✅ ¡Llave guardada correctamente!");
+            } else {
+                console.error("❌ El servidor no envió un string. Envió:", realToken);
+            }
         }
-
         return result;
-
     } catch (error) {
-
-        console.log("Login error:", error);
-
+        console.error("Error en login:", error);
         return { error: "Server error" };
-
     }
 };
 export const getMuscles = async () => {
@@ -77,11 +79,12 @@ export const getEquipment = async () => {
 };
 
 export const generateWorkout = async (selection) => {
+  const token= localStorage.getItem("token");
   const response = await fetch(`${BASE_URL}/workouts/generate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(selection),
   });
@@ -89,6 +92,6 @@ export const generateWorkout = async (selection) => {
     const data = await response.json();
     return data;
   }
-  alert("No se puydo generar el entrenamiento.Comprueba si iniciaste sesion");
+  alert("No se puydo generar el entrenamiento. Comprueba si iniciaste sesion");
   return null;
 };

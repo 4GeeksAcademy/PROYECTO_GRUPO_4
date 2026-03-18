@@ -39,11 +39,10 @@ export default function storeReducer(store, action = {}) {
       };
 
     case "login":
-      localStorage.setItem("token", action.payload);
-
       return {
         ...store,
-        token: action.payload,
+        token: action.payload.token,
+        user: action.payload.user
       };
 
     case "logout":

@@ -33,7 +33,7 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
 
         if (response.token) {
             setError("");
-
+            
             
             dispatch({
                 type: "login",
@@ -45,7 +45,7 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
 
             onClose();
             
-            navigate("/");
+            navigate("/"); 
         } else {
             setError(response.error || "Credenciales incorrectas");
         }
@@ -113,8 +113,8 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
 
                     <p className="text-center mt-4">
                         ¿Aún no tienes una cuenta? <br />
-                        <span
-                            className="auth-link"
+                        <span 
+                            className="auth-link" 
                             onClick={openRegister}
                             style={{ cursor: "pointer", fontWeight: "bold" }}
                         >

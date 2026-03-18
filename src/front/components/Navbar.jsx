@@ -8,11 +8,13 @@ import { RegisterModal } from "./RegisterModal";
 export const Navbar = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
+    
 
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
 
+    
 
     const dropdownRef = useRef();
 
@@ -34,7 +36,8 @@ export const Navbar = () => {
     const handleLogout = () => {
         dispatch({ type: "logout" });
         setShowDropdown(false);
-        navigate("/");
+        navigate("/"); 
+        
     };
 
     return (
@@ -42,7 +45,7 @@ export const Navbar = () => {
             <nav className="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top shadow">
                 <div className="container">
                     <Link className="navbar-brand" to="/">
-                        <img src={logo} alt="Logo" className="logo-img" style={{ height: "50px" }} />
+                        <img src={logo} alt="Logo" className="logo-img" style={{ height: "100px" }} />
                     </Link>
 
                     <div className="ms-auto">
@@ -56,10 +59,10 @@ export const Navbar = () => {
                                 </button>
                             </div>
                         ) : (
-                            
+                           
                             <div className="position-relative" ref={dropdownRef}>
-                                <button
-                                    className="btn custom-btn rounded-circle d-flex align-items-center justify-content-center"
+                                <button 
+                                    className="btn custom-btn rounded-circle d-flex align-items-center justify-content-center" 
                                     style={{ width: "45px", height: "45px" }}
                                     onClick={() => setShowDropdown(!showDropdown)}
                                 >
@@ -67,13 +70,13 @@ export const Navbar = () => {
                                 </button>
 
                                 {showDropdown && (
-                                    <div className="dropdown-menu-custom show position-absolute end-0 mt-2 p-2 shadow-lg"
-                                         style={{ background: "#1A1A1A", borderRadius: "8px", border: "1px solid #333", minWidth: "180px", zIndex: 1000 }}>
-
+                                    <div className="dropdown-menu-custom show position-absolute end-0 mt-2 p-2 shadow-lg" 
+                                         style={{ background: "#1a1a1a", borderRadius: "8px", border: "1px solid #333", minWidth: "180px", zIndex: 1000 }}>
+                                        
                                         <Link to="/profile" className="dropdown-item-custom d-block p-2 text-decoration-none text-white mb-1" onClick={() => setShowDropdown(false)}>
                                             <i className="fas fa-user-circle me-2 text-danger"></i> Mi Perfil
                                         </Link>
-
+                                        
                                         <Link to="/profile/settings" className="dropdown-item-custom d-block p-2 text-decoration-none text-white mb-1" onClick={() => setShowDropdown(false)}>
                                             <i className="fas fa-cog me-2 text-danger"></i> Ajustes
                                         </Link>
@@ -92,15 +95,15 @@ export const Navbar = () => {
             </nav>
 
             
-            <LoginModal
-                show={showLogin}
-                onClose={() => setShowLogin(false)}
-                openRegister={() => { setShowLogin(false); setShowRegister(true); }}
+            <LoginModal 
+                show={showLogin} 
+                onClose={() => setShowLogin(false)} 
+                openRegister={() => { setShowLogin(false); setShowRegister(true); }} 
             />
-            <RegisterModal
-                show={showRegister}
-                onClose={() => setShowRegister(false)}
-                openLogin={openLogin}
+            <RegisterModal 
+                show={showRegister} 
+                onClose={() => setShowRegister(false)} 
+                openLogin={openLogin} 
             />
         </>
     );
