@@ -9,11 +9,13 @@ export const Navbar = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
     
+
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
 
     
+
     const dropdownRef = useRef();
 
     useEffect(() => {
@@ -35,6 +37,7 @@ export const Navbar = () => {
         dispatch({ type: "logout" });
         setShowDropdown(false);
         navigate("/"); 
+        
     };
 
     return (
