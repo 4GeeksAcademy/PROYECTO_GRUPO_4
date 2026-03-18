@@ -7,6 +7,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 import requests
+import re
 
 from api.services import generate_workout
 
@@ -29,50 +30,75 @@ def handle_hello():
 
 @api.route('/signup', methods=['POST'])
 def signup():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    try:
+        data = request.get_json()
+        username = data.get('username') or ""
+        email = data.get('email')
+        password = data.get('password')
 
-    if not email or not password:
-        return jsonify({"error": "Email and password required"}), 400
+        if not email or not password:
+            return jsonify({"error": "Email and password required"}), 400
 
-    existing_user = db.session.execute(db.select(User).where(
-        User.email == email)).scalar_one_or_none()
 
-    if existing_user:
-        return jsonify({"error": "Email already exist"}), 400
+        password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$'
 
-    new_user = User(email=email)
-    new_user.set_password(password)
+        if not re.match(password_regex, password):
+          return jsonify({
+        "error": "Password must be at least 8 characters long and include uppercase, lowercase, number and special character"
+    }), 400
 
-    db.session.add(new_user)
-    db.session.commit()
+        existing_user = db.session.execute(
+           db.select(User).where(User.email == email)
+           ).scalar_one_or_none()
 
-    return jsonify({"Message": "User created usccessfully"}), 201
+        if existing_user:
+            return jsonify({"error": "Email already exist"}), 400
+
+        new_user = User(email=email, username=username)
+
+        new_user.set_password(password)
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"message": "User created successfully"}), 201
+
+    except Exception as e:
+        print("ERROR REAL:", e)
+        return jsonify({"error": "Server error"}), 500
 
 
 @api.route('/login', methods=['POST'])
 def login():
+    try:
+        data = request.get_json()
 
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+        email = data.get('email')
+        password = data.get('password')
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+        user = db.session.execute(
+            db.select(User).where(User.email == email)
+        ).scalar_one_or_none()
 
-    user = db.session.execute(db.select(User).where(
-        User.email == email)).scalar_one_or_none()
+        if not user:
+            return jsonify({"error": "User not found"}), 401
 
-    if user is None:
-        return jsonify({"error": "Invalided email or password"}), 401
+        print("PASSWORD FRONT:", password)
+        print("HASH BD:", user.password_hash)
 
-    if user.check_password(password):
-        access_token = create_access_token(identity=str(user.id))
-        return jsonify({"Message": "Login successful", "token": access_token, "user": user.serialize()}), 200
+        if not user.check_password(password):
+            return jsonify({"error": "Invalid credentials"}), 401
 
-    else:
-        return jsonify({"error": "Invalided email or password"}), 401
+        access_token = create_access_token(identity=user.id)
+
+        return jsonify({
+            "token": access_token,
+            "user": user.serialize()
+        }), 200
+
+    except Exception as e:
+        print("LOGIN ERROR:", e)
+        return jsonify({"error": "Server error"}), 500
 
 
 @api.route('/profile', methods=['GET'])
@@ -187,24 +213,23 @@ def import_wger():
     data = response.json()
 
     ejercicios_lista = data.get('results', [])
-    
+
     print(f"He recibido {len(ejercicios_lista)} ejercicios de la API")
     for item in ejercicios_lista:
         translations = item.get('translations')
-        
-        
+
         api_muscles = item.get('muscles', [])
         if api_muscles:
             muscle_name_api = api_muscles[0].get('name_en')
             muscle_db = Muscle.query.filter_by(name=muscle_name_api).first()
-            
+
         api_equipments = item.get('equipment', [])
         equipos_encontrados = []
         for eq in api_equipments:
-            eq_name = eq.get('name') 
+            eq_name = eq.get('name')
             equipo_db = Equipment.query.filter_by(name=eq_name).first()
             if equipo_db:
-                equipos_encontrados.append(equipo_db)   
+                equipos_encontrados.append(equipo_db)
 
         if translations is None or translations == "":
             continue
@@ -214,7 +239,7 @@ def import_wger():
                 nuevo_ejercicio = Exercise(
                     name=translation["name"],
                     description=translation["description"],
-                    
+
 
                 )
                 if muscle_db:
@@ -222,7 +247,7 @@ def import_wger():
 
                 for equipo in equipos_encontrados:
                     nuevo_ejercicio.equipments.append(equipo)
-                    
+
                 db.session.add(nuevo_ejercicio)
 
     db.session.commit()
@@ -410,11 +435,11 @@ def get_all_exercises():
     results = [exercise.serialize() for exercise in exercises]
     return jsonify(results), 200
 
+
 @api.route('/muscles', methods=['GET'])
 def get_all_muscles():
     muscles = Muscle.query.all()
     return jsonify([m.serialize() for m in muscles]), 200
-
 
 
 @api.route('/equipment', methods=['GET'])

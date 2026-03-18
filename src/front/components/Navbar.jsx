@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/img/Logo-png.png";
-
+import useGlobalReducer from "../hooks/useGlobalReducer";
 import { LoginModal } from "./LoginModal";
 import { RegisterModal } from "./RegisterModal";
 
 export const Navbar = () => {
 
+
+    const { store, dispatch } = useGlobalReducer();
+
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
+
+    const openLogin = () => {
+        setShowRegister(false);
+        setShowLogin(true);
+    };
 
     return (
 
@@ -22,19 +30,34 @@ export const Navbar = () => {
 
                     <div className="ms-auto">
 
-                        <button
-                            className="btn custom-btn me-2"
-                            onClick={() => setShowLogin(true)}
-                        >
-                            Iniciar Sesión
-                        </button>
+                        {!store.token ? (
 
-                        <button
-                            className="btn custom-btn"
-                            onClick={() => setShowRegister(true)}
-                        >
-                            Registrarse
-                        </button>
+                            <>
+                                <button
+                                    className="btn custom-btn me-2"
+                                    onClick={() => setShowLogin(true)}
+                                >
+                                    Iniciar Sesión
+                                </button>
+
+                                <button
+                                    className="btn custom-btn"
+                                    onClick={() => setShowRegister(true)}
+                                >
+                                    Registrarse
+                                </button>
+                            </>
+
+                        ) : (
+
+                            <button
+                                className="btn custom-btn"
+                                onClick={() => dispatch({ type: "logout" })}
+                            >
+                                Cerrar sesión
+                            </button>
+
+                        )}
 
                     </div>
 
@@ -49,6 +72,7 @@ export const Navbar = () => {
             <RegisterModal
                 show={showRegister}
                 onClose={() => setShowRegister(false)}
+                openLogin={openLogin}
             />
 
         </>

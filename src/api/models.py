@@ -151,9 +151,9 @@ class WorkoutExercise(db.Model):
             "id": self.id,
             "workout_id": self.workout_id,
             "exercise_id": self.exercise_id,
-            "order": self.order,  
-            "reps": self.reps,    
-            "percent_of_max": self.percent_of_max, 
+            "order": self.order,
+            "reps": self.reps,
+            "percent_of_max": self.percent_of_max,
             "exercise": self.exercise.serialize() if self.exercise else None
         }
 
@@ -186,6 +186,8 @@ class FavoriteWorkout(db.Model):
 class User(db.Model):
     id: Mapped[int] = mapped_column(
         primary_key=True)
+    username: Mapped[str] = mapped_column(
+        String(80), nullable=True)
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(
@@ -194,6 +196,7 @@ class User(db.Model):
     workouts: Mapped[list["Workout"]] = relationship(
         back_populates="user")
 
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(
             password).decode('utf-8')

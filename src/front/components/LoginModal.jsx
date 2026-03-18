@@ -1,18 +1,28 @@
 import { useState } from "react";
 import { loginUser } from "../services/backendServices";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/img/Logo-png.png";
+import "../styles/auth.css";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+
+export const LoginModal = ({ show, onClose, openRegister }) => {
 
 
-export const LoginModal = ({ show, onClose }) => {
 
     const navigate = useNavigate();
+    const { dispatch } = useGlobalReducer();
 
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     });
 
+    const [error, setError] = useState("");
+
     const handleChange = (e) => {
+
+        if (error) setError("");
+
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -26,7 +36,12 @@ export const LoginModal = ({ show, onClose }) => {
 
         if (response.token) {
 
-            localStorage.setItem("token", response.token);
+            setError("");
+
+            dispatch({
+                type: "login",
+                payload: response.token
+            });
 
             onClose();
 
@@ -34,7 +49,7 @@ export const LoginModal = ({ show, onClose }) => {
 
         } else {
 
-            alert("Credenciales incorrectas");
+            setError(response.error || "Credenciales incorrectas");
 
         }
     };
@@ -42,55 +57,86 @@ export const LoginModal = ({ show, onClose }) => {
     if (!show) return null;
 
     return (
-        <div className="modal d-block">
-            <div className="modal-dialog">
-                <div className="modal-content">
 
-                    <div className="modal-header">
-                        <h5 className="modal-title">Iniciar Sesión</h5>
-                        <button className="btn-close" onClick={onClose}></button>
-                    </div>
+        <div className="auth-overlay">
+
+            <div className="auth-card">
+                <button className="auth-close" onClick={onClose}>
+                    ×
+                </button>
+
+                <div className="auth-top-bar"></div>
+
+                <img src={logo} className="auth-logo" />
+
+                <div className="auth-body">
+
+                    {error && (
+                        <div className="auth-error">
+                            {error}
+                        </div>
+                    )}
+
+                    <h3 className="auth-title">
+                        Iniciar Sesión
+                    </h3>
 
                     <form onSubmit={handleSubmit}>
 
-                        <div className="modal-body">
+                        <div className="auth-input-group">
+
+                            <i className="fas fa-envelope auth-icon"></i>
 
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="Email"
-                                className="form-control mb-3"
+                                placeholder="Correo Electrónico"
+                                className="form-control auth-input"
                                 onChange={handleChange}
                                 required
                             />
+
+                        </div>
+
+                        <div className="auth-input-group">
+
+                            <i className="fas fa-lock auth-icon"></i>
 
                             <input
                                 type="password"
                                 name="password"
-                                placeholder="Password"
-                                className="form-control"
+                                placeholder="Contraseña"
+                                className="form-control auth-input"
                                 onChange={handleChange}
                                 required
                             />
 
                         </div>
 
-                        <div className="modal-footer">
-
-                            <button className="btn btn-secondary" onClick={onClose}>
-                                Cerrar
-                            </button>
-
-                            <button type="submit" className="btn btn-primary">
-                                Entrar
-                            </button>
-
-                        </div>
+                        <button className="btn auth-btn">
+                            Ingresar
+                        </button>
 
                     </form>
 
+                    <p className="text-center mt-3">
+                        ¿Aún no tienes una cuenta?
+                        <br />
+                        <span
+                            className="auth-link"
+                            onClick={openRegister}
+                        >
+                            Regístrate
+                        </span>
+                    </p>
+
+
+
                 </div>
+
             </div>
+
         </div>
+
     );
 };
