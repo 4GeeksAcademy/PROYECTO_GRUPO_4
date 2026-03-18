@@ -77,11 +77,12 @@ export const getEquipment = async () => {
 };
 
 export const generateWorkout = async (selection) => {
+  const token= localStorage.getItem("token");
   const response = await fetch(`${BASE_URL}/workouts/generate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(selection),
   });
@@ -89,6 +90,6 @@ export const generateWorkout = async (selection) => {
     const data = await response.json();
     return data;
   }
-  alert("No se puydo generar el entrenamiento.Comprueba si iniciaste sesion");
+  alert("No se puydo generar el entrenamiento. Comprueba si iniciaste sesion");
   return null;
 };
