@@ -171,3 +171,31 @@ body {
   transform: scale(1.2);
   transition: 0.3s;
 }
+
+.dropdown-menu-custom {
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  min-width: 180px;
+  padding: 10px 0;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item-custom {
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.dropdown-item-custom:hover {
+  background: #dc3545;
+  color: white;
+}
