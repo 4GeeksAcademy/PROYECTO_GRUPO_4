@@ -15,7 +15,7 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
     });
 
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         if (error) setError("");
@@ -30,22 +30,25 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
         setLoading(true);
 
         const response = await loginUser(formData);
+        console.log("Login response:", response);
 
         if (response.token) {
             setError("");
-            
-            
+
+            localStorage.setItem("token", response.token);              
+            localStorage.setItem("user", JSON.stringify(response.user)); 
+
             dispatch({
                 type: "login",
                 payload: {
                     token: response.token,
-                    user: response.user 
+                    user: response.user
                 }
             });
 
             onClose();
-            
-            navigate("/"); 
+
+            navigate(`/profile/${response.user.id}`);
         } else {
             setError(response.error || "Credenciales incorrectas");
         }
@@ -57,7 +60,7 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
     return (
         <div className="auth-overlay">
             <div className="auth-card">
-                
+
                 <button className="auth-close" onClick={onClose} type="button">
                     &times;
                 </button>
@@ -113,8 +116,8 @@ export const LoginModal = ({ show, onClose, openRegister }) => {
 
                     <p className="text-center mt-4">
                         ¿Aún no tienes una cuenta? <br />
-                        <span 
-                            className="auth-link" 
+                        <span
+                            className="auth-link"
                             onClick={openRegister}
                             style={{ cursor: "pointer", fontWeight: "bold" }}
                         >

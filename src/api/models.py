@@ -181,32 +181,46 @@ class FavoriteWorkout(db.Model):
             "workout_id": self.workout_id,
             "workout": self.workout.serialize() if self.workout else None
         }
-
-
-class User(db.Model):
-    id: Mapped[int] = mapped_column(
-        primary_key=True)
-    username: Mapped[str] = mapped_column(
-        String(80), nullable=True)
-    email: Mapped[str] = mapped_column(
-        String(120), unique=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(
-        nullable=False)
-
-    workouts: Mapped[list["Workout"]] = relationship(
-        back_populates="user")
-
     
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(
-            password).decode('utf-8')
+class User(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(80), nullable=True)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(nullable=False)
+    bio: Mapped[str] = mapped_column(String(300), nullable=True)
+    profile_picture: Mapped[str] = mapped_column(String(500), nullable=True)
+    height: Mapped[int] = mapped_column(db.Integer, nullable=True)        # 👈 nuevo
+    weight: Mapped[float] = mapped_column(db.Float, nullable=True)        # 👈 nuevo
+    main_exercise: Mapped[str] = mapped_column(String(100), nullable=True) # 👈 nuevo
+    clean_and_jerk: Mapped[float] = mapped_column(db.Float, nullable=True)
+    snatch: Mapped[float] = mapped_column(db.Float, nullable=True)
+    deadlift: Mapped[float] = mapped_column(db.Float, nullable=True)
+    back_squat: Mapped[float] = mapped_column(db.Float, nullable=True)
+    fran_time: Mapped[str] = mapped_column(String(10), nullable=True)
+    murph_time: Mapped[str] = mapped_column(String(10), nullable=True)
 
-    def check_password(self, password):
+    workouts: Mapped[list["Workout"]] = relationship(back_populates="user")
+
+    def set_password(self, password):       
+        self.password_hash = generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):     
         return check_password_hash(self.password_hash, password)
 
     def serialize(self):
         return {
             "id": self.id,
             "email": self.email,
-            # do not serialize the password, its a security breach
+            "username": self.username,
+            "bio": self.bio,
+            "profile_picture": self.profile_picture,
+            "height": self.height,          # 👈 nuevo
+            "weight": self.weight,          # 👈 nuevo
+            "main_exercise": self.main_exercise,  # 👈 nuevo
+            "clean_and_jerk": self.clean_and_jerk,
+            "snatch": self.snatch,
+            "deadlift": self.deadlift,
+            "back_squat": self.back_squat,
+            "fran_time": self.fran_time,
+            "murph_time": self.murph_time
         }

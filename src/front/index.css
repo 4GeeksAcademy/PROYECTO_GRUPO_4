@@ -113,6 +113,8 @@ body {
 
 .img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 
@@ -155,36 +157,88 @@ body {
   }
 }
 
-
+/* Estilos para la sección de favoritos */
 .favoritesSection {
-  background: #121212;
-  padding: 2rem;
-  border-radius: 8px;
-  border-top: 4px solid #dc3545;
+  background: #0d0d0d;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-top: 3px solid #dc3545;
   margin-top: 2rem;
   width: 100%;
 }
 
-
 .carouselContainer {
   display: flex;
+  gap: 1rem;
   overflow-x: auto;
-  gap: 1.5rem;
-  padding-bottom: 1rem;
-  gap: 1.5rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #dc3545 #1a1a1a;
 }
 
+.carouselContainer::-webkit-scrollbar {
+  height: 6px;
+}
+.carouselContainer::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 10px;
+}
+.carouselContainer::-webkit-scrollbar-thumb {
+  background: #dc3545;
+  border-radius: 10px;
+}
 
 .carouselCard {
-  flex: 0 0 250px;
-  background: #2a2a2a;
-  padding: 1rem;
-  border-radius: 4px;
-  border: 1px solid #333;
-
+  flex: 0 0 180px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #2a2a2a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   animation: deslizarSubir 0.6s ease-out;
 }
+
+.carouselCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.2);
+}
+
+.carouselCardTop {
+  background: #dc3545;
+  padding: 0.75rem 1rem;
+}
+
+.carouselCardTop span {
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: rgba(0,0,0,0.3);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.carouselCardBody {
+  padding: 0.75rem 1rem;
+}
+
+.carouselCardBody h4 {
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.carouselCardBody small {
+  color: #888;
+  font-size: 11px;
+}
+/* Termina estilos para la sección de favoritos */
 
 .generator-wrapper {
   max-width: 450px;

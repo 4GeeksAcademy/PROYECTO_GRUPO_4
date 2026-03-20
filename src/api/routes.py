@@ -119,6 +119,49 @@ def profile():
         "user": user.serialize()
     }), 200
 
+@api.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_user(user_id):
+    user = db.session.get(User, user_id)
+
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify(user.serialize()), 200
+
+@api.route('/user/<int:user_id>', methods=['PUT'])
+@jwt_required()
+def update_user(user_id):
+    current_user_id = get_jwt_identity()
+    if int(current_user_id) != user_id:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    new_password = data.get("new_password")
+    current_password = data.get("current_password")
+    if new_password:
+        if not current_password or not user.check_password(current_password):
+            return jsonify({"error": "Contraseña actual incorrecta"}), 400
+        user.set_password(new_password)
+    user.bio = data.get("bio", user.bio)
+    user.profile_picture = data.get("profile_picture", user.profile_picture)
+    user.username = data.get("username", user.username)
+    user.height = data.get("height", user.height)           
+    user.weight = data.get("weight", user.weight)           
+    user.main_exercise = data.get("main_exercise", user.main_exercise)  
+    user.clean_and_jerk = data.get("clean_and_jerk", user.clean_and_jerk)
+    user.snatch = data.get("snatch", user.snatch)
+    user.deadlift = data.get("deadlift", user.deadlift)
+    user.back_squat = data.get("back_squat", user.back_squat)
+    user.fran_time = data.get("fran_time", user.fran_time)
+    user.murph_time = data.get("murph_time", user.murph_time)
+
+    db.session.commit()
+    return jsonify(user.serialize()), 200
 
 @api.route('/favorites/<int:workout_id>', methods=['POST'])
 @jwt_required()
