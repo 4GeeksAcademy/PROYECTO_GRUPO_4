@@ -57,6 +57,8 @@ export const Profile_Settings = () => {
             setImage(URL.createObjectURL(file));
         }
     };
+    const toNumberOrNull = (value) => value === "" ? null : Number(value);
+    const toStringOrNull = (value) => value === "" ? null : value;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -79,11 +81,23 @@ export const Profile_Settings = () => {
             }
         }
 
-        const dataToSend = {        
-            ...formData,
-            height: formData.height !== "" ? parseInt(formData.height) : null,
-            weight: formData.weight !== "" ? parseFloat(formData.weight) : null,
-            profile_picture: image
+        const dataToSend = {
+            username: formData.username,
+            bio: formData.bio,
+            profile_picture: image,
+            current_password: formData.current_password,
+            new_password: formData.new_password,
+
+            height: toNumberOrNull(formData.height),
+            weight: toNumberOrNull(formData.weight),
+            clean_and_jerk: toNumberOrNull(formData.clean_and_jerk),
+            snatch: toNumberOrNull(formData.snatch),
+            deadlift: toNumberOrNull(formData.deadlift),
+            back_squat: toNumberOrNull(formData.back_squat),
+
+            main_exercise: toStringOrNull(formData.main_exercise),
+            fran_time: toStringOrNull(formData.fran_time),
+            murph_time: toStringOrNull(formData.murph_time)
         };
 
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/${userId}`, {
@@ -92,7 +106,7 @@ export const Profile_Settings = () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify(dataToSend) 
+            body: JSON.stringify(dataToSend)
         });
 
         if (response.ok) {
