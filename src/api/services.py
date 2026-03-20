@@ -11,11 +11,11 @@ def generate_workout(user_id, muscle_id, equipment_ids, max_time, workout_name):
         query = query.filter((Exercise.equipments.any(
             Equipment.id.in_(equipment_ids)))|
             (db.not_(Exercise.equipments.any())))
-    else:
-        query= query.filter(db.not_(Exercise.equipments.any()))
+ #   else:
+  #      query= query.filter(db.not_(Exercise.equipments.any()))
 
     posibles_exercises = query.all()
-
+    print(f"Ejercicios encontrados para muscle_id {muscle_id}: {len(posibles_exercises)}")
     if not posibles_exercises:
         return None
     

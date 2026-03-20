@@ -1,30 +1,51 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "/src/front/profile_styles.css";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Profile_Settings = () => {
+    const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
-    
-    
+
     const [formData, setFormData] = useState({
         username: "",
         bio: "",
         height: "",
         weight: "",
-        main_exercise: ""
+        main_exercise: "",
+        clean_and_jerk: "",
+        snatch: "",
+        deadlift: "",
+        back_squat: "",
+        fran_time: "",
+        murph_time: "",
+        current_password: "",
+        new_password: "",
+        confirm_password: ""
+
     });
     const [image, setImage] = useState("https://images.icon-icons.com/3868/PNG/512/profile_circle_icon_242774.png");
 
-    
+    // 👈 Carga los datos actuales del usuario al abrir la página
     useEffect(() => {
-        const loadUserData = async () => {
-            
-            console.log("Cargando datos del atleta desde el backend...");
-           
-        };
-        loadUserData();
-    }, []);
+        if (store.user) {
+            setFormData({
+                username: store.user.username || "",
+                bio: store.user.bio || "",
+                height: store.user.height || "",
+                weight: store.user.weight || "",
+                main_exercise: store.user.main_exercise || "",
+                clean_and_jerk: store.user.clean_and_jerk || "",
+                snatch: store.user.snatch || "",
+                deadlift: store.user.deadlift || "",
+                back_squat: store.user.back_squat || "",
+                fran_time: store.user.fran_time || "",
+                murph_time: store.user.murph_time || ""
+            });
+            if (store.user.profile_picture) setImage(store.user.profile_picture);
+        }
+    }, [store.user]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,15 +58,51 @@ export const Profile_Settings = () => {
         }
     };
 
-   
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
-        console.log("Guardando datos en la DB...", formData);
-        
-        
-        
-        
-        navigate("/profile"); 
+        e.preventDefault();
+        console.log(import.meta.env.VITE_BACKEND_URL)
+        const token = localStorage.getItem("token");
+        const userId = store.user?.id || JSON.parse(localStorage.getItem("user"))?.id;
+
+        console.log("userId:", userId);
+        console.log("token:", token);
+
+        if (!userId || !token) {
+            alert("No hay sesión activa");
+            return;
+        }
+
+        if (formData.new_password) {
+            if (formData.new_password !== formData.confirm_password) {
+                alert("Las contraseñas no coinciden");
+                return;
+            }
+        }
+
+        const dataToSend = {        
+            ...formData,
+            height: formData.height !== "" ? parseInt(formData.height) : null,
+            weight: formData.weight !== "" ? parseFloat(formData.weight) : null,
+            profile_picture: image
+        };
+
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(dataToSend) 
+        });
+
+        if (response.ok) {
+            const updatedUser = await response.json();
+            dispatch({ type: "login", payload: { token, user: updatedUser } });
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            navigate(`/profile/${userId}`);
+        } else {
+            alert("Error al guardar los cambios");
+        }
     };
 
     return (
@@ -54,7 +111,7 @@ export const Profile_Settings = () => {
                 <h2 className="title">Información Personal</h2>
                 <div className="avatarSection">
                     <div className="avatarContainer">
-                        <img src={image} className="img" alt="Foto de Perfil" />
+                        <img src={image} alt="Foto de Perfil" />
                     </div>
                     <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
                     <button className="btn btn-outline-danger btn-sm mt-2" onClick={() => fileInputRef.current.click()}>
@@ -62,7 +119,7 @@ export const Profile_Settings = () => {
                     </button>
                 </div>
 
-                
+
                 <form className="form" onSubmit={handleSubmit}>
                     <div className="inputGroup">
                         <label>Usuario</label>
@@ -73,7 +130,52 @@ export const Profile_Settings = () => {
                         <textarea name="bio" rows="3" value={formData.bio} onChange={handleChange} placeholder="Algo sobre tus entrenamientos..."></textarea>
                     </div>
                     <hr className="divider" />
+                    <div className="inputGroup">
+                        <label>Contraseña actual</label>
+                        <input type="password" name="current_password" value={formData.current_password} onChange={handleChange} placeholder="••••••••" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Nueva contraseña</label>
+                        <input type="password" name="new_password" value={formData.new_password} onChange={handleChange} placeholder="••••••••" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Confirmar nueva contraseña</label>
+                        <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} placeholder="••••••••" />
+                    </div>
+                    <hr className="divider" />
                     <button type="submit" className="saveBtn">Guardar Cambios</button>
+                </form>
+
+            </div>
+
+            <div className="singleCard">
+                <h2 className="title">Estadísticas</h2>
+                <form className="form" onSubmit={handleSubmit}>
+                    <div className="inputGroup">
+                        <label>Clean & Jerk (kg)</label>
+                        <input type="number" name="clean_and_jerk" value={formData.clean_and_jerk} onChange={handleChange} placeholder="100" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Snatch (kg)</label>
+                        <input type="number" name="snatch" value={formData.snatch} onChange={handleChange} placeholder="80" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Deadlift (kg)</label>
+                        <input type="number" name="deadlift" value={formData.deadlift} onChange={handleChange} placeholder="180" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Back Squat (kg)</label>
+                        <input type="number" name="back_squat" value={formData.back_squat} onChange={handleChange} placeholder="140" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Fran Time (mm:ss)</label>
+                        <input type="text" name="fran_time" value={formData.fran_time} onChange={handleChange} placeholder="3:25" />
+                    </div>
+                    <div className="inputGroup">
+                        <label>Murph Time (mm:ss)</label>
+                        <input type="text" name="murph_time" value={formData.murph_time} onChange={handleChange} placeholder="45:00" />
+                    </div>
+                    <button type="submit" className="saveBtn">Guardar Estadísticas</button>
                 </form>
             </div>
 
