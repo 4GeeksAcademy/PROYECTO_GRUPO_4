@@ -35,7 +35,7 @@ export const Footer = () => {
                    
                     <div className="col-md-4 follow-us">
                         <h5 className="font-oswald text-white mb-4">SÍGUENOS</h5>
-                        <div className="d-flex gap-3">
+                        <div className="d-flex justify-content-center gap-3">
                             <a href="#" className="social-pill"><i className="fab fa-instagram"></i></a>
                             <a href="#" className="social-pill"><i className="fab fa-github"></i></a>
                             <a href="#" className="social-pill"><i className="fab fa-linkedin"></i></a>

@@ -62,6 +62,7 @@ export const Navbar = () => {
 
                             <div className="position-relative" ref={dropdownRef}>
                                 <button
+                                    className="btn custom-btn profile-btn d-flex align-items-center justify-content-center"
                                     className="btn custom-btn rounded-circle d-flex align-items-center justify-content-center"
                                     style={{ width: "45px", height: "45px" }}
                                     onClick={() => setShowDropdown(!showDropdown)}
@@ -73,6 +74,11 @@ export const Navbar = () => {
                                     <div className="dropdown-menu-custom show position-absolute end-0 mt-2 p-2 shadow-lg"
                                         style={{ background: "#1a1a1a", borderRadius: "8px", border: "1px solid #333", minWidth: "180px", zIndex: 1000 }}>
 
+                                        <Link to="/profile" className="dropdown-item-custom d-block p-2 text-decoration-none text-white mb-1" onClick={() => setShowDropdown(false)}>
+                                            <i className="fas fa-user-circle me-2 text-danger"></i> Mi Perfil
+                                        </Link>
+
+                                        <Link to="/profile/settings" className="dropdown-item-custom d-block p-2 text-decoration-none text-white mb-1" onClick={() => setShowDropdown(false)}>
                                         <Link to={`/profile/${store.user?.id}`} className="dropdown-item-custom d-block p-2 text-decoration-none text-white mb-1" onClick={() => setShowDropdown(false)}>
                                             <i className="fas fa-user-circle me-2 text-danger"></i> Mi Perfil
                                         </Link>

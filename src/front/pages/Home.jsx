@@ -28,7 +28,7 @@ export const Home = () => {
 
 
                     <div className="col-lg-6 text-center text-lg-start">
-                        <h1 className="titulo-pro mb-4">WOD <span className="text-danger">GENERATOR</span></h1>
+                        <h1 className="titulo-pro mb-4 hero-title">WOD <span className="text-danger hero-title">GENERATOR</span></h1>
                         <p className="text-secondary fs-5 mb-5">Crea tus tablas de entrenamiento en segundos.</p>
 
                         <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
@@ -58,10 +58,9 @@ export const Home = () => {
 
                             <video
                                 autoPlay loop muted playsInline
-                                className="img-fluid rounded-3 shadow-lg position-relative z-1"
+                                className="video-bg img-fluid rounded-3 shadow-lg position-relative z-1"
                                 style={{
                                     filter: 'grayscale(100%) brightness(0.8) contrast(1.2)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
                                     objectFit: 'cover', height: '450px', width: '100%'
                                 }}
                             >
