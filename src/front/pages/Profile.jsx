@@ -40,6 +40,23 @@ export const Profile = () => {
 
   }, [id]);
 
+  const handleRemoveFavorite = async (workoutId) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/favorites/${workoutId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (response.ok) {
+      setFavorites(favorites.filter(fav => fav.workout.id !== workoutId));
+    } else {
+      alert("Error al eliminar favorito");
+    }
+  };
+
+  const handleAddFavorite = (workout) => {
+    setFavorites(prev => [...prev, { favorite_id: Date.now(), workout }]);
+  };
+
   if (!user) return <p>Cargando perfil...</p>;
 
   return (
@@ -73,7 +90,7 @@ export const Profile = () => {
             <p className="text-secondary">Aún no tienes WODs generados.</p>
           ) : (
             workouts.map(workout => (
-              <WorkoutCard key={workout.id} workout={workout} />
+              <WorkoutCard key={workout.id} workout={workout} onFavorite={handleAddFavorite} isFavorited={favorites.some(fav => fav.workout.id === workout.id)} />
             ))
           )}
         </section>
@@ -114,6 +131,12 @@ export const Profile = () => {
                 <div className="carouselCardBody">
                   <h4>{fav.workout.name}</h4>
                   <small>{fav.workout.time} min</small>
+                  <button
+                    onClick={() => handleRemoveFavorite(fav.workout.id)}
+                    style={{ background: "none", border: "none", color: "#dc3545", cursor: "pointer", fontSize: "11px", padding: "4px 0 0", display: "block" }}
+                  >
+                    <i className="fas fa-heart-broken me-1"></i> Quitar
+                  </button>
                 </div>
               </div>
             ))
