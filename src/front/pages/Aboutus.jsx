@@ -25,7 +25,7 @@ export function Aboutus() {
                         <div className="team-card p-4 text-center h-100">
                             <div className="team-img-wrapper mb-4 mx-auto">
                                 <img 
-                                    src="public/IMAGES/Foto_Documento (1).png" 
+                                    src="https://avatars.githubusercontent.com/u/211037302?v=4" 
                                     alt="Pablo Aristizabal"
                                     className="img-fluid"
                                 />
@@ -64,7 +64,7 @@ export function Aboutus() {
                         <div className="team-card p-4 text-center h-100">
                             <div className="team-img-wrapper mb-4 mx-auto">
                                 <img 
-                                    src="https://avatars.githubusercontent.com/u/223447640?v=4&size=64" 
+                                    src="https://media.licdn.com/dms/image/v2/D5603AQHKomwxxWPhew/profile-displayphoto-scale_100_100/B56ZkbKP5RHkAo-/0/1757097296086?e=1775692800&v=beta&t=KTybIFVT1pIr2sSglROY7T3W3bFK2WZO9VTa14gblX4" 
                                     alt="Manuel Francisco"
                                     className="img-fluid"
                                 />
